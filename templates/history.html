@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Audit History</h1>
+    <div style="display: flex; gap: 1rem;">
+        <button class="btn btn-secondary" onclick="window.print()">Export PDF</button>
+        <a href="/" class="btn">New Analysis</a>
+    </div>
+</header>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Target Filename</th>
+                <th>Security Status</th>
+                <th>Risk Vector</th>
+                <th>Storage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in scans %}
+            <tr>
+                <td style="color: var(--text-muted);">{{ s.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td style="font-weight: 500;">{{ s.filename }}</td>
+                <td>
+                    <span class="badge badge-{{ s.status.lower() }}">{{ s.status }}</span>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; width: 60px;">
+                            <div style="width: {{ (s.risk_score * 100)|int }}%; height: 100%; background: {{ 'var(--danger)' if s.risk_score > 0.5 else 'var(--success)' }};"></div>
+                        </div>
+                        <span style="font-size: 0.75rem; font-weight: 600;">{{ "%.2f"|format(s.risk_score) }}</span>
+                    </div>
+                </td>
+                <td>
+                    <a href="{{ s.storage_path }}" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                        Retrieve
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="padding: 4rem; text-align: center; color: var(--text-muted);">
+                    No security logs found on this node.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

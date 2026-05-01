@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  threat-scanner:
+    build: .
+    container_name: threat_scanner_service
+    restart: always
+    ports:
+      - "80:8000"  # Map host port 80 to container port 8000
+    volumes:
+      - ./data:/app/data  # Persistent local data storage on Azure VM
+    env_file:
+      - .env
+    environment:
+      - DATABASE_PATH=data/scanner_audit.db
+      - LOCAL_UPLOADS_DIR=data/uploads

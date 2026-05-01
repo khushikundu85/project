@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Security Dashboard</h1>
+    <div class="user-info" style="font-size: 0.875rem; color: var(--text-muted);">
+        Node: AZURE-PROD-VM-01
+    </div>
+</header>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Total Scans</span>
+        <span class="stat-value">1,284</span>
+    </div>
+    <div class="stat-card" style="border-left: 4px solid var(--danger);">
+        <span class="stat-label">Threats Blocked</span>
+        <span class="stat-value" style="color: var(--danger);">42</span>
+    </div>
+    <div class="stat-card" style="border-left: 4px solid var(--success);">
+        <span class="stat-label">System Status</span>
+        <span class="stat-value" style="color: var(--success);">Healthy</span>
+    </div>
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 1.5rem; font-weight: 600;">Initiate New File Scan</h3>
+    
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>Security Exception:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div id="drop-area" style="border: 2px dashed var(--border-color); border-radius: 0.75rem; padding: 3rem; text-align: center; margin-bottom: 1.5rem; background: #fafafa; transition: all 0.2s;">
+            <svg style="color: var(--text-muted); margin-bottom: 1rem;" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p style="font-weight: 500; margin-bottom: 0.5rem;">Drag & drop files here</p>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Max file size: 10MB. Allowed: .py, .exe, .sh, .txt, .pdf</p>
+            <input type="file" name="file" id="fileElem" style="display:none" onchange="handleFiles(this.files)" required>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileElem').click()">Browse Local Storage</button>
+        </div>
+        <button type="submit" class="btn" style="width: 100%; justify-content: center; padding: 0.875rem;">Run Heuristic Engine</button>
+    </form>
+</div>
+
+<div class="card" style="padding: 0;">
+    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-weight: 600;">System Intelligence</h3>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Real-time Monitoring Active</span>
+    </div>
+    <div style="padding: 1.5rem; color: var(--text-muted); font-size: 0.875rem; line-height: 1.6;">
+        Our scanner uses multi-stage analysis including keyword signature matching, entropy calculation, and binary structure verification. This system is designed to be hosted on secure Azure Virtual Machines with local data persistence.
+    </div>
+</div>
+
+<script>
+    function handleFiles(files) {
+        if (files.length > 0) {
+            document.getElementById('drop-area').style.borderColor = 'var(--primary)';
+            document.getElementById('drop-area').style.background = '#eff6ff';
+            const fileName = files[0].name;
+            document.querySelector('#drop-area p').innerHTML = `<strong>Selected: ${fileName}</strong>`;
+        }
+    }
+</script>
+{% endblock %}
